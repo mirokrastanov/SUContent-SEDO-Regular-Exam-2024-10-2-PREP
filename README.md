@@ -1,0 +1,1 @@
+- test #5 - Jenkinsfile should not trigger the pipeline
