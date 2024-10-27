@@ -2,11 +2,19 @@ pipeline {
     agent any
 
     stages {
-        stage('Print Branch Name') {
+        stage('Restore dependencies') {
             steps {
-                script {
-                    echo "Branch name from env.BRANCH_NAME: ${env.BRANCH_NAME}"
-                }
+                bat 'dotnet restore'
+            }
+        }
+        stage('Build project') {
+            steps {
+                bat 'dotnet build --no-restore'
+            }
+        }
+        stage('Execute tests') {
+            steps {
+                bat 'dotnet test --no-build --verbosity normal'
             }
         }
     }
