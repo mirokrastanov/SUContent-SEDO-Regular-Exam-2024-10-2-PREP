@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout Branch') {
+            steps {
+                // Explicitly checkout the current branch
+                checkout scm
+            }
+        }
+        
         stage('Get Branch Name') {
             steps {
                 script {
