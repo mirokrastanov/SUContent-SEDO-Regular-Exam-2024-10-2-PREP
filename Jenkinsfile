@@ -2,16 +2,22 @@ pipeline {
     agent any
 
     stages {
-        stage('Debug Branch Name') {
+        stage('Set Branch Name') {
             steps {
                 script {
-                    echo "Branch name: ${env.BRANCH_NAME}"
+                    // Fetch branch name using Git and set it to an environment variable
+                    env.ACTUAL_BRANCH = sh(
+                        script: 'git rev-parse --abbrev-ref HEAD',
+                        returnStdout: true
+                    ).trim()
+                    echo "Detected branch: ${env.ACTUAL_BRANCH}"
                 }
             }
         }
+        
         stage('Restore dependencies') {
             when {
-                expression { env.BRANCH_NAME == 'feature-ci-pipeline' }
+                expression { env.ACTUAL_BRANCH == 'feature-ci-pipeline' }
             }
             steps {
                 bat 'dotnet restore'
@@ -19,7 +25,7 @@ pipeline {
         }
         stage('Build project') {
             when {
-                expression { env.BRANCH_NAME == 'feature-ci-pipeline' }
+                expression { env.ACTUAL_BRANCH == 'feature-ci-pipeline' }
             }
             steps {
                 bat 'dotnet build --no-restore'
@@ -27,7 +33,7 @@ pipeline {
         }
         stage('Execute tests') {
             when {
-                expression { env.BRANCH_NAME == 'feature-ci-pipeline' }
+                expression { env.ACTUAL_BRANCH == 'feature-ci-pipeline' }
             }
             steps {
                 bat 'dotnet test --no-build --verbosity normal'
