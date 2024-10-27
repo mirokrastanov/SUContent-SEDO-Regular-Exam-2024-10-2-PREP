@@ -1,0 +1,1 @@
+- Test #2 - goal: trigger pipeline and run integration tests
