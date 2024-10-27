@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Debug Branch Name') {
+            steps {
+                script {
+                    echo "Branch name: ${env.BRANCH_NAME}"
+                }
+            }
+        }
         stage('Restore dependencies') {
             when {
                 expression { env.BRANCH_NAME == 'feature-ci-pipeline' }
